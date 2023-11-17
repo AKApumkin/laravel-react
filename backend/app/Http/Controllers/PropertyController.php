@@ -15,7 +15,9 @@ class PropertyController extends BaseController
 
     public function index($agent_id)
     {
-        $properties = Property::select("id","address","city","postcode")->where("agent_id","=",$agent_id)->get();
+        $properties = Property::select("id","address","city","postcode")
+                            ->where("agent_id","=",$agent_id)
+                            ->paginate(10);
         return $properties;
     }
 
