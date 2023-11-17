@@ -11,13 +11,13 @@ const [agent, setAgent] = useState('');
 useEffect(() => {
     const storedItem = JSON.parse(localStorage.getItem('agent_id') || 'null');
     if (storedItem) {
-        setAgent(storedItem);
+        setAgent(storedItem.agent);
     }
 }, []);
 
 return (
     <div className="header h-14 bg-primary-color">
-        <div className="header__inner max-w-7xl m-auto">
+        <div className="header__inner max-w-7xl m-auto max-xl:px-5">
             <div className="header__logo float-left m-1">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 578.32 103.54" className="h-10 w-20 fill-white">
                 <title>Kamma</title> 

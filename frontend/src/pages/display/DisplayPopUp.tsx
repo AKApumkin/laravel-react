@@ -46,7 +46,7 @@ export default function DisplayPopUp(props: protertiesPopUpList) {
         <div className=" modalbackgroundmodal fixed w-full h-full top-0 left-0 z-50 bg-black bg-opacity-10">
             <dialog id="modal" className="modal fixed bg-white w-11/12 h-5/6 top-14 z-50 border" open>
                 <button id="closeModal" className="float-right h-8 bg-cta-color px-2 text-white m-3 rounded-md hover:bg-primary-color hover:text-white" onClick={() => props.setOpenModal(false)}>Close</button>
-                <div className="modal__contents w-80 m-auto pt-24">
+                <div className="modal__contents w-80 m-auto pt-24 box-border max-sm:w-full max-sm:p-10">
                     <div className="modal__fields mb-5">
                         <label htmlFor={"address"+props.id} className="mb-2 w-full text-xs">Address:</label>
                         <input id={"address"+props.id} className="w-full border indent-1" name="address" type="text" defaultValue={props.address} onChange={e => SetformState({...formState, address: e.target.value})}/>

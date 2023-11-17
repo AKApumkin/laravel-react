@@ -8,57 +8,61 @@ interface Property {
     city: string;
     postcode: string;
 }
+interface Pagination {
+    currentPage: number;
+    lastPage: number;
+}
 
 function Display() {
-
-    interface FormState {
-        agent: string;
-        city: string;
-        modal: string;
-        selectedAddress: string;
-        selectedCity: string;
-        selectedPostcode: string;
-    }
-    
-    /**
-     * manages all the sates for the display section
-     */
-    const [formState, SetformState] = useReducer(
-        (state: FormState, newState: Partial<FormState>) => ({ ...state, ...newState }),
-        {
-            agent: "",
-            city: "",
-            modal: "open",
-            selectedAddress: "",
-            selectedCity: "",
-            selectedPostcode: "",
-        }
-    );
   
     const [properties, setProperties] = useState<Property[]>([]);
-    const getAgentProperties = (agent: string) => {
-        const url = "http://localhost/api/properties/"+agent;
+    const [pagination, setPagination] = useState<Pagination>({ currentPage: 1, lastPage: 2 });
+    const [loadingData, setLoadingData] = useState<boolean>(false);
+
+    /**
+     * gets the paginated agent properties from the api
+     * @param agentID agent id
+     * @param getNextPage optional boolean to trigger if next page is called
+     * @returns 
+     */
+    const getAgentProperties = (agentID: string, getNextPage?:boolean) => {
+        if (getNextPage && (pagination.currentPage < pagination.lastPage)) {
+            setLoadingData(true);
+            let newPagination = pagination.currentPage += 1;
+            agentID = agentID + "?page=" + newPagination;
+            setPagination({ ...pagination, currentPage: newPagination });
+        }
+        const url = "http://localhost/api/properties/" + agentID;
+
         return fetch(url)
             .then((res) => res.json())
-            .then((d) => setProperties(d));
+            .then((data) => {
+                setProperties([...properties, ...data.data]);
+                setPagination({...pagination, lastPage: data.last_page});
+                setLoadingData(false);
+            });
     }
 
+    /*
+    * gets the agent id from local storage and calls the getAgentProperties function    
+    */
+    const [agentID, setAgentID] = useState<string>("");
     useEffect(() => {
         const storedItem = JSON.parse(localStorage.getItem("agent_id") || "null");
         if (storedItem) {
-            SetformState({...formState, agent: storedItem.agent})
             getAgentProperties(storedItem.agent);
+            setAgentID(storedItem.agent);
         }
-    }, []);
+    }, [agentID]);
 
     return (
         <div className="display m-auto pt-5 max-w-7xl">
             <div className="display__inner max-xl:px-5">
                 <h1 className="box-border pb-5 text-5xl">Properties</h1>
-                <div className="display__items inline-block m-auto pt-10 w-full">
-                    <ul className=" w-full box-border">
-                        {properties.length > 0 ? (
-                            properties.map((item: Property, index: number) => (
+                { properties.length > 0 ? (
+                    <div className="display__items m-auto pt-10 w-full pb-12 box-border">
+                        <ul className=" w-full box-border">
+                            { properties.map((item: Property, index: number) => (
                                 <DisplayItem
                                     key={item.id}
                                     index={index}
@@ -67,12 +71,21 @@ function Display() {
                                     city={item.city}
                                     postcode={item.postcode}
                                 />
-                            ))
-                        ) : (
-                            <LoadingSpinner />
-                        )}
-                    </ul>
-                </div>
+                            ))}
+                        </ul>
+                        <div className="w-80 mx-auto">
+                            { loadingData && (
+                                <LoadingSpinner />
+                            )}
+                            {(pagination.currentPage < pagination.lastPage) && (!loadingData) &&  (
+                                <button onClick={() => {getAgentProperties(agentID, true)}} 
+                                className="mx-auto h-8 bg-cta-color px-2 text-white w-full max-w-sm max-w:50 rounded-md hover:bg-primary-color hover:text-white">Load More</button>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <LoadingSpinner />
+                )}
             </div>
         </div>
     );
