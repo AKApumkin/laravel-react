@@ -32,7 +32,11 @@ Route::get('/agents', [AgentController::class, 'index']);
 
 Route::get('/properties/{agent_id}', [PropertyController::class, 'index']);
 Route::get('/property/{id}', [PropertyController::class, 'getSpecificProperty']);
+Route::get('/property-city/{agent_id}', [PropertyController::class, 'getPropertyCity']);
+Route::get('/property-city/{city}/{agent_id}', [PropertyController::class, 'searchPropertyCity']);
 Route::post('/property', [PropertyController::class, 'updateProperty']);
+Route::post('/property-search', [PropertyController::class, 'customSearch']);
+
 Route::post('/csv-search', function () {
     
 });
