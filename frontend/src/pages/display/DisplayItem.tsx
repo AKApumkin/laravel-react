@@ -19,7 +19,7 @@ function DisplayItem(props: listItem) :ReactElement {
         setOpenModal(true);
     }
     return (
-        <li key={props.index+props.id} className="border-b relative inline-block border-primary-color w-full pb-5 mt-10 last-of-type:border-none">
+        <li key={props.index+props.postcode} className="border-b relative inline-block w-full pb-5 mt-10 last-of-type:border-none first-of-type:mt-2">
             <div className="display__items__image float-left max-w-sm w-1/6 max-lg:w-2/4 max-sm:w-full">
                 <img src="https://picsum.photos/300/200" alt="" width="100%" height="100%"/>
             </div>
