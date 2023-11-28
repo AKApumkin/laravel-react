@@ -79,7 +79,7 @@ class PropertyController extends BaseController
             foreach($value as $key => $item) {
                 foreach ($unique_values as $key => $unique_value) {
                     if($item == $unique_value) {
-                        array_push($unique_values_array[$unique_value], $value["City"]);
+                        array_push($unique_values_array[$key], $value["City"]);
                     }
                 }
             }
@@ -87,6 +87,11 @@ class PropertyController extends BaseController
 
         // Create return array with property data
         $return_array = $this->createDynamicArray($unique_values);
+
+        // Add the name of unique sections to the array
+        foreach ($return_array as $key => $value) {
+            $return_array[$key]["unique_name"] = $unique_values[$key] ;
+        }
         
         // For each unqique search array get the required data and return as JSON
         foreach ($unique_values_array as $key => $value) {
@@ -94,7 +99,7 @@ class PropertyController extends BaseController
                                         ->whereIn("city", $value)
                                         ->where("agent_id","=",$agent_id)
                                         ->get();
-                $return_array[$key] = $properties;
+                $return_array[$key]["properties"] = $properties;
         }
         return response()->json($return_array);
     }
@@ -128,7 +133,7 @@ class PropertyController extends BaseController
     private function createDynamicArray($array) {
         $unique_values_array = array();
         foreach ($array as $key => $unique_value) {
-            $unique_values_array[$unique_value] = array();
+            $unique_values_array[$key] = array();
         }
         return $unique_values_array;
     }

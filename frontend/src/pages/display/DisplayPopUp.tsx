@@ -30,10 +30,10 @@ export default function DisplayPopUp(props: protertiesPopUpList) {
     /**
      * updates the property information
      */
-    const updateProperty = () => {
+    const updateProperty = async () => {
         const url = "http://localhost/api/property";
-        fetch(url, {
-            method: "POST",
+        await fetch(url, {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },

@@ -13,10 +13,15 @@ interface Pagination {
     currentPage: number;
     lastPage: number;
 }
+interface FilterdProperties {
+    unique_name: String;
+    properties: Property[];
+}
 
 function Display() {
 
     const [properties, setProperties] = useState<Property[]>([]);
+    const [filterdProperties, setFilterdProperties] = useState<FilterdProperties[]>([]);
     const [pagination, setPagination] = useState<Pagination>({ currentPage: 1, lastPage: 2 });
     const [agentID, setAgentID] = useState<string>("");
     const [loadingData, setLoadingData] = useState<boolean>(false);
@@ -91,11 +96,8 @@ function Display() {
         })
         .then((res) => res.json())
         .then((data) => { 
-            setProperties([...properties, ...data.additional]);
-            setProperties([...properties, ...data.mandatory]);
-            setProperties([...properties, ...data.selective]);
+            setFilterdProperties([...data]);
             setPagination({ ...pagination, lastPage: 1 });
-            console.log(data);
             setLoadingData(false);
         });
     }
@@ -104,10 +106,34 @@ function Display() {
         <div className="display m-auto pt-5 max-w-7xl">
             <div className="display__inner max-xl:px-5">
                 <h1 className="box-border pb-5 text-5xl">Properties</h1>
-                { properties.length > 0 ? (
+                { (properties.length > 0) || (filterdProperties.length > 0) ? (
                 <div className="display__content">
                 <PropertySearch getPropertiesByCity={getPropertiesByCity} fetchCustomSearch={fetchCustomSearch}/>
                     <div className="display__items m-auto pt-5 w-full pb-12 box-border">
+                        { filterdProperties.length > 0 && (
+                            <div className="w-full pb-5">
+                                <h2 className="text-2xl pb-2">Search Results</h2>
+                                <ul className="w-full box-border">
+                                    { filterdProperties.map((item: FilterdProperties, index: number) => (
+                                        <li key={index} className="w-full pb-2">
+                                            <h3 className="text-xl pb-2">{item.unique_name}</h3>
+                                            <ul className="w-full box-border">
+                                                { item.properties.map((property: Property, index: number) => (
+                                                    <DisplayItem
+                                                        key={property.id}
+                                                        index={index}
+                                                        id={property.id}
+                                                        address={property.address}
+                                                        city={property.city}
+                                                        postcode={property.postcode}
+                                                    />
+                                                ))}
+                                            </ul>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                         <ul className=" w-full box-border">
                             { properties.map((item: Property, index: number) => (
                                 <DisplayItem
