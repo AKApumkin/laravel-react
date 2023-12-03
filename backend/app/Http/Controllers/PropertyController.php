@@ -7,6 +7,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use App\Models\Property;
+use App\Http\Resources\PropertyResource;
 use App\Http\Resources\PropertyResourceCollection;
 
 
@@ -41,7 +42,7 @@ class PropertyController extends BaseController
     public function getSpecificProperty($property_id)
     {
         $property = Property::find($property_id);
-        return new PropertyResourceCollection($property);
+        return new PropertyResource($property);
     }
 
     public function updateProperty(Request $request)
