@@ -20,14 +20,4 @@ class AgentController extends BaseController
         $agents = Agent::select('id','name')->get();
         return $agents;
     }
-
-    // /** REMOVE IF NOT NEEDED
-    //  * return a JSON of the specific agents with id and name.
-    //  * @return JSON
-    //  */
-    // public function getSpecificAgent()
-    // {
-    //     $agent = Agent::find($id);
-    //     return $agent;
-    // }
 }

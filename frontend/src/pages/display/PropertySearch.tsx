@@ -23,8 +23,8 @@ export default function PropertySearch(props: City) {
     const fetchCities = async () : Promise<void> => {
         const url = "http://localhost/api/property-city/"+agentID;
         const res = await fetch(url);
-        const d = await res.json();
-        return setCityData(d);
+        const data = await res.json();
+        return setCityData(data.data);
     };
 
     useEffect(() => {

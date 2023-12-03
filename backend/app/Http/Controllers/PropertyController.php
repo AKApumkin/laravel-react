@@ -7,6 +7,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use App\Models\Property;
+use App\Http\Resources\PropertyResourceCollection;
 
 
 class PropertyController extends BaseController
@@ -15,10 +16,9 @@ class PropertyController extends BaseController
 
     public function index($agent_id)
     {
-        $properties = Property::select("id","address","city","postcode")
-                                ->where("agent_id","=",$agent_id)
+        $properties = Property::where("agent_id","=",$agent_id)
                                 ->paginate(10);
-        return $properties;
+        return new PropertyResourceCollection($properties);
     }
 
     public function getPropertyCity($agent_id) {
@@ -26,23 +26,22 @@ class PropertyController extends BaseController
                                 ->where("agent_id","=",$agent_id)
                                 ->distinct()
                                 ->get();
-        return $properties;
+        return new PropertyResourceCollection($properties);
     }
 
     public function searchPropertyCity($city, $agent_id) {
-        $properties = Property::select("id","address","city","postcode")
-                                ->where([
+        $properties = Property::where([
                                     ["city","=",$city],
                                     ["agent_id","=",$agent_id]
                                 ])
                                 ->paginate(10);
-        return $properties;
+        return new PropertyResourceCollection($properties);
     }
 
     public function getSpecificProperty($property_id)
     {
         $property = Property::find($property_id);
-        return $property;
+        return new PropertyResourceCollection($property);
     }
 
     public function updateProperty(Request $request)
