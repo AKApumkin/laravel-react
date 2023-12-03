@@ -10,15 +10,15 @@ class PropertyResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @return array<string, mixed>
+     * @return array<string", mixed>
      */
     public function toArray(Request $request): array
     {
         return [
-                "id"        => $this->id,
-                "address"   => $this->address,
-                "city"      => $this->city,
-                "postcode"  => $this->postcode
+                "id"        => $this->whenHas("id"),
+                "address"   => $this->whenHas("address"),
+                "city"      => $this->whenHas("city"),
+                "postcode"  => $this->whenHas("postcode")
         ];
     }
 }
